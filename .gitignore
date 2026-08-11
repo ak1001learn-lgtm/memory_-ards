@@ -1,6 +1,10 @@
 .vscode/
-examples/
+
+
+__pycache__/
+/examples/
 
 
 
 *.md
+!README.md
