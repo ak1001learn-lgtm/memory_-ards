@@ -1,10 +1,12 @@
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import  (
     QButtonGroup,
+    QCheckBox,
     QHBoxLayout,
     QLabel,
     QPushButton,
     QRadioButton,
+    QScrollArea,
     QVBoxLayout, 
     QWidget
 )
@@ -15,7 +17,14 @@ class StartScreen(QWidget):
         super().__init__()
 
         layout = QVBoxLayout(self)
-
+        layout_margin = 40
+        layout.setContentsMargins(
+            layout_margin := 40,
+            layout_margin,
+            layout_margin,
+            layout_margin,
+        )
+        layout.setSpacing(16)
 
         title = QLabel("memory cards")
         title_font = QFont()
@@ -26,8 +35,6 @@ class StartScreen(QWidget):
 
         subtitle = QLabel("изучаем английский с помощью карточек")
         layout.addWidget(subtitle)
-
-        layout.addSpacing(12)
 
         study_button = QPushButton("начать обучение")
         study_button.setMinimumHeight(40)
@@ -54,11 +61,24 @@ class StartScreen(QWidget):
             mode_group.addButton(radio)
             moeds_layout.addWidget(radio)
 
-        # moeds_layout.addStretch()
         layout.addLayout(moeds_layout)
 
-        # QCheckBox для тегов
-        #QScrollArea 
+        tags_label = QLabel("категории:")
+        layout.addWidget(tags_label)
+
+        tags_container = QWidget()
+        self.tags_layout = QVBoxLayout(tags_container)
+        self.tags_layout.setContentsMargins(
+            tags_layout_mardin := 10,
+            tags_layout_mardin,
+            tags_layout_mardin,
+            tags_layout_mardin
+        )
+
+        tags_scroll = QScrollArea()
+        tags_scroll.setWidgetResizable(True)
+        tags_scroll.setWidget(tags_container)
+        layout.addWidget(tags_scroll)
 
         settings_button = QPushButton("настойки")
         quit_button    = QPushButton("выйти")
@@ -67,3 +87,18 @@ class StartScreen(QWidget):
         bottom_layout.addWidget(settings_button)
         bottom_layout.addWidget(quit_button)
         layout.addLayout(bottom_layout)
+
+        self.refresh_tags()
+
+    def refresh_tags(self):
+        dummy_tags = [
+            "транспорт",
+            "природа",
+            "школа",
+            "спорт",
+        ]
+
+        dummy_tags.sort()
+        for tag_name in dummy_tags:
+            check = QCheckBox(tag_name.lower())
+            self.tags_layout.addWidget(check)
