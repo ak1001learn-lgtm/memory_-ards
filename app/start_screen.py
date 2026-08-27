@@ -1,3 +1,4 @@
+from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import  (
     QButtonGroup,
@@ -13,11 +14,14 @@ from PyQt6.QtWidgets import  (
 
 
 class StartScreen(QWidget):
+    goto_study_screen = pyqtSignal()
+    quit_app = pyqtSignal()
+
+
     def __init__(self) -> None:
         super().__init__()
 
         layout = QVBoxLayout(self)
-        layout_margin = 40
         layout.setContentsMargins(
             layout_margin := 40,
             layout_margin,
@@ -38,6 +42,7 @@ class StartScreen(QWidget):
 
         study_button = QPushButton("начать обучение")
         study_button.setMinimumHeight(40)
+        study_button.clicked.connect(self.goto_study_screen.emit)
         layout.addWidget(study_button)
 
         modes_label = QLabel("режим обучения")
@@ -82,6 +87,7 @@ class StartScreen(QWidget):
 
         settings_button = QPushButton("настойки")
         quit_button    = QPushButton("выйти")
+        quit_button.clicked.connect(self.quit_app.emit)
 
         bottom_layout = QHBoxLayout()
         bottom_layout.addWidget(settings_button)

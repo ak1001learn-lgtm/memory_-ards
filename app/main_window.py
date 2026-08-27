@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QMainWindow, QStackedWidget 
 
 from app.start_screen import StartScreen
+from app.study_screen import StudyScreen
 
 class MainWindow(QMainWindow):
     def __init__(self) -> None:
@@ -8,9 +9,17 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("mamory cards")   
 
 
-        stack = QStackedWidget()
-        self.setCentralWidget(stack) 
+        self.stack = QStackedWidget()
+        self.setCentralWidget(self.stack) 
 
-        start_screen = StartScreen()
+        self.start_screen = StartScreen()
+        self.study_screen = StudyScreen()
 
-        stack.addWidget(start_screen)
+        self.stack.addWidget(self.start_screen)
+        self.stack.addWidget(self.study_screen)
+
+        self.start_screen.goto_study_screen.connect(self._open_study)
+        self.start_screen.quit_app.connect(self.close)
+
+    def _open_study(self) -> None:
+        self.stack.setCurrentWidget(self.study_screen)
