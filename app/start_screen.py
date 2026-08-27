@@ -15,7 +15,7 @@ from PyQt6.QtWidgets import  (
 
 class StartScreen(QWidget):
     goto_study_screen = pyqtSignal()
-    quit_app = pyqtSignal()
+    quit_app          = pyqtSignal()
 
 
     def __init__(self) -> None:

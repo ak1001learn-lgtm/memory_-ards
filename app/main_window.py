@@ -21,5 +21,10 @@ class MainWindow(QMainWindow):
         self.start_screen.goto_study_screen.connect(self._open_study)
         self.start_screen.quit_app.connect(self.close)
 
+        self.study_screen.goto_start_screen.connect(self._open_start)
+
     def _open_study(self) -> None:
         self.stack.setCurrentWidget(self.study_screen)
+
+    def _open_start(self) -> None:
+        self.stack.setCurrentWidget(self.start_screen)
