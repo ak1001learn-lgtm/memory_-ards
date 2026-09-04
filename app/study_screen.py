@@ -1,6 +1,7 @@
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import(
+    QFrame,
     QHBoxLayout,
     QLabel,
     QPushButton,
@@ -42,6 +43,7 @@ class StudyScreen(QWidget):
         card_area = QPushButton()
         card_area.setMinimumHeight(CARD_MIN_HEIGHT)
         card_area.setCheckable(False)
+        #card_area.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         card_area.setCursor(Qt.CursorShape.PointingHandCursor)
         card_area.setSizePolicy(
             QSizePolicy.Policy.Expanding,
@@ -49,21 +51,38 @@ class StudyScreen(QWidget):
         )
 
 
-        card_label = QLabel(card_area)
-        card_label.setText("apple")
-        card_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.card_label = QLabel(card_area)
+        self.card_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.card_label.setWordWrap(True)
+        self.card_label.setTextFormat(Qt.TextFormat.RichText)
+        self.card_label.setSizePolicy(
+            QSizePolicy.Policy.Expanding,
+            QSizePolicy.Policy.Minimum,
+        )
 
         card_font = QFont()
         card_font.setPointSize(14)
-        card_label.setFont(card_font)
+        self.card_label.setFont(card_font)
 
         card_layout = QVBoxLayout(card_area)
-        card_layout.addWidget(card_label)
+        card_layout.addWidget(self.card_label)
+        self.card_label.setContentsMargins(
+            CARD_PADDING, 
+            CARD_PADDING, 
+            CARD_PADDING, 
+            CARD_PADDING,
+        )
 
         card_scroll = QScrollArea()
         card_scroll.setWidgetResizable(True)
+        card_scroll.setHorizontalScrollBarPolicy(
+            Qt.ScrollBarPolicy.ScrollBarAlwaysOff
+        )
+        card_scroll.setFrameShape(QFrame.Shape.NoFrame)
         card_scroll.setWidget(card_area)
         layout.addWidget(card_scroll)
+
+        self.update_card_face()
 
         hint_label = QLabel("нажмите по карточке или пробел, чтобы перевернуть её")
         hint_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -79,3 +98,22 @@ class StudyScreen(QWidget):
         prev_button.setMinimumHeight(botton_button_hight)
         botton_layout.addWidget(next_button)
         layout.addLayout(botton_layout)
+
+    def update_card_face(self):
+        self.front_face = False
+
+        if self.front_face:
+            text = (
+                "<b>Apple</b><br>"
+                "[æpl]" 
+            )
+        else:
+            text = (
+                "<b>перевод</b><br>"
+                "яблоко<br>,<br>"
+                "<b>определение</b><br>"
+                "a round, edible fruit.<br>,<br>"
+                "<b>примеры использования</b><br>"
+                "she ate an <i>apple</i> for breacfast."
+            )
+        self.card_label.setText(text)
