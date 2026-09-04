@@ -110,10 +110,10 @@ class StudyScreen(QWidget):
         else:
             text = (
                 "<b>перевод</b><br>"
-                "яблоко<br>,<br>"
+                "яблоко<br><br>"
                 "<b>определение</b><br>"
-                "a round, edible fruit.<br>,<br>"
+                "a round, edible fruit.<br><br>"
                 "<b>примеры использования</b><br>"
-                "she ate an <i>apple</i> for breacfast."
+                "she ate an <i>apple</i> for breakfast."
             )
         self.card_label.setText(text)
