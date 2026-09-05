@@ -15,12 +15,32 @@ from PyQt6.QtWidgets import(
 CARD_MIN_HEIGHT = 280
 CARD_PADDING    = 16
 
+dummy_cards = [
+    {
+        "world" : "apple",
+        "transcription" : "[æpl]",
+        "translation"   : "яблоко",
+        "definition"    : "a round, edible fruit.",
+        "examples"      : "she ate an <i>apple</i> for breakfast."
+    },
+    {
+        "world" : "car",
+        "transcription" : "[kɑː]",
+        "translation"   : "автомобиль",
+        "definition"    : "a motor vehicle with wheels (usually, 4)",
+        "examples"      : "the <i>car</i> is parket outside"
+    },
+]
+
 
 class StudyScreen(QWidget):
     goto_start_screen = pyqtSignal()
 
     def __init__(self) -> None:
         super().__init__()
+
+        self.is_front_face = True
+        self.was_flipped = False 
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(
@@ -49,6 +69,7 @@ class StudyScreen(QWidget):
             QSizePolicy.Policy.Expanding,
             QSizePolicy.Policy.Expanding,
         )
+        card_area.clicked.connect(self.flip_card)
 
 
         self.card_label = QLabel(card_area)
@@ -82,27 +103,36 @@ class StudyScreen(QWidget):
         card_scroll.setWidget(card_area)
         layout.addWidget(card_scroll)
 
-        self.update_card_face()
-
         hint_label = QLabel("нажмите по карточке или пробел, чтобы перевернуть её")
         hint_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(hint_label)
 
         botton_layout = QHBoxLayout()
-        prev_button = QPushButton("назад")
-        next_button = QPushButton("вперед")
+        self.prev_button = QPushButton("назад")
+        self.next_button = QPushButton("вперед")
         
-        botton_button_hight = 40
-        next_button.setMinimumHeight(botton_button_hight)
-        botton_layout.addWidget(prev_button)
-        prev_button.setMinimumHeight(botton_button_hight)
-        botton_layout.addWidget(next_button)
+        self.next_button.setMinimumHeight(botton_button_hight :=40)
+        botton_layout.addWidget(self.prev_button)
+        self.prev_button.setMinimumHeight(botton_button_hight)
+        botton_layout.addWidget(self.next_button)
         layout.addLayout(botton_layout)
 
-    def update_card_face(self):
-        self.front_face = False
+        self.update()
 
-        if self.front_face:
+    def flip_card(self) -> None:
+        self.is_front_face = not self.is_front_face
+        self.was_flipped = True
+
+        self.update()
+
+    def update(self) -> None:
+        self.update_card()
+        self.prev_button.setEnabled(self.was_flipped)
+        self.next_button.setEnabled(self.was_flipped)
+
+    def update_card(self) -> None:
+        
+        if self.is_front_face:
             text = (
                 "<b>Apple</b><br>"
                 "[æpl]" 
