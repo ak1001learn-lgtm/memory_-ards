@@ -17,14 +17,14 @@ CARD_PADDING    = 16
 
 dummy_cards = [
     {
-        "world" : "apple",
+        "word" : "apple",
         "transcription" : "[æpl]",
         "translation"   : "яблоко",
         "definition"    : "a round, edible fruit.",
         "examples"      : "she ate an <i>apple</i> for breakfast."
     },
     {
-        "world" : "car",
+        "word" : "car",
         "transcription" : "[kɑː]",
         "translation"   : "автомобиль",
         "definition"    : "a motor vehicle with wheels (usually, 4)",
@@ -39,6 +39,7 @@ class StudyScreen(QWidget):
     def __init__(self) -> None:
         super().__init__()
 
+        self.current_card_index = 0
         self.is_front_face = True
         self.was_flipped = False 
 
@@ -110,9 +111,11 @@ class StudyScreen(QWidget):
         botton_layout = QHBoxLayout()
         self.prev_button = QPushButton("назад")
         self.next_button = QPushButton("вперед")
-        
         self.next_button.setMinimumHeight(botton_button_hight :=40)
         botton_layout.addWidget(self.prev_button)
+        self.prev_button.clicked.connect(self.end_stady)
+        self.next_button.clicked.connect(self.end_stady)
+        
         self.prev_button.setMinimumHeight(botton_button_hight)
         botton_layout.addWidget(self.next_button)
         layout.addLayout(botton_layout)
@@ -131,19 +134,27 @@ class StudyScreen(QWidget):
         self.next_button.setEnabled(self.was_flipped)
 
     def update_card(self) -> None:
+        current_card = dummy_cards[self.current_card_index]
         
         if self.is_front_face:
             text = (
-                "<b>Apple</b><br>"
-                "[æpl]" 
+                "<b>{word}</b><br>"
+                "{transcription}" 
             )
         else:
             text = (
                 "<b>перевод</b><br>"
-                "яблоко<br><br>"
+                "{translation}<br><br>"
                 "<b>определение</b><br>"
-                "a round, edible fruit.<br><br>"
+                "{definition}<br><br>"
                 "<b>примеры использования</b><br>"
-                "she ate an <i>apple</i> for breakfast."
+                "{examples}"
             )
-        self.card_label.setText(text)
+        self.card_label.setText(text.format_map(current_card))
+
+    def end_stady(self) -> None:
+        if self.current_card_index < len(dummy_cards) - 1 :
+            self.current_card_index += 1
+            self.update_card()
+        else:
+            self.goto_start_screen.emit()
