@@ -12,6 +12,15 @@ from PyQt6.QtWidgets import  (
     QWidget
 )
 
+from app.ui_style import *
+
+
+dummy_tags = [
+    "транспорт",
+    "природа",
+    "школа",
+    "спорт",
+]
 
 class StartScreen(QWidget):
     goto_study_screen = pyqtSignal()
@@ -22,31 +31,45 @@ class StartScreen(QWidget):
         super().__init__()
 
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(
-            layout_margin := 40,
-            layout_margin,
-            layout_margin,
-            layout_margin,
-        )
-        layout.setSpacing(16)
+        layout.setContentsMargins(BIG_MARGINS)
+        layout.setSpacing(BIG_SPACING)
+
+        self.create_title()
+        self.create_study_button()
+        self.create_modes()
+        self.create_tags()
+        self.creade_bottom_buttons()
+
+        self.refresh_tags()
+
+    def create_title(self) -> None:
+        title_layout = QVBoxLayout()
+        title_layout.setSpacing(SML_SPACING)
+        self.layout.addLayout(title_layout)
 
         title = QLabel("memory cards")
         title_font = QFont()
-        title_font.setPointSize(22)
+        title_font.setPointSize(TITLE_FONT_SIZE)
         title_font.setBold(True)
         title.setFont(title_font)
-        layout.addWidget(title)
+        title_layout.addWidget(title)
 
         subtitle = QLabel("изучаем английский с помощью карточек")
-        layout.addWidget(subtitle)
+        title_layout.addWidget(subtitle)
 
+    def create_study_button(self) -> None:
         study_button = QPushButton("начать обучение")
-        study_button.setMinimumHeight(40)
+        study_button.setMinimumHeight(BIG_BUTTON_HEIGHT)
         study_button.clicked.connect(self.goto_study_screen.emit)
-        layout.addWidget(study_button)
+        self.layout.addWidget(study_button)
+    
+    def create_modes(self) -> None:
+        modes_layout = QVBoxLayout()
+        modes_layout.setSpacing(SML_SPACING)
+        self.layout.addLayout(modes_layout)
 
         modes_label = QLabel("режим обучения")
-        layout.addWidget(modes_label)
+        modes_layout.addWidget(modes_label)
 
         radio_new_only = QRadioButton("только новые")
         radio_all      = QRadioButton("все карточки")
@@ -60,31 +83,31 @@ class StartScreen(QWidget):
         ]
 
         mode_group = QButtonGroup(self)
-        moeds_layout = QHBoxLayout()
+        moeds_group_layout = QHBoxLayout()
+        modes_layout.addLayout(moeds_group_layout)
 
         for radio in mode_radios:
             mode_group.addButton(radio)
-            moeds_layout.addWidget(radio)
-
-        layout.addLayout(moeds_layout)
+            moeds_group_layout.addWidget(radio)
+    
+    def create_tags(self) -> None:
+        tags_layout = QVBoxLayout()
+        tags_layout.setSpacing(SML_SPACING)
+        self.layout.addLayout(tags_layout)
 
         tags_label = QLabel("категории:")
-        layout.addWidget(tags_label)
+        tags_layout.addWidget(tags_label)
 
         tags_container = QWidget()
-        self.tags_layout = QVBoxLayout(tags_container)
-        self.tags_layout.setContentsMargins(
-            tags_layout_mardin := 10,
-            tags_layout_mardin,
-            tags_layout_mardin,
-            tags_layout_mardin
-        )
+        self.tags_scroll_layout = QVBoxLayout(tags_container)
+        self.tags_scroll_layout.setContentsMargins(SML_MARGINS)
 
         tags_scroll = QScrollArea()
         tags_scroll.setWidgetResizable(True)
         tags_scroll.setWidget(tags_container)
-        layout.addWidget(tags_scroll)
+        tags_layout.addWidget(tags_scroll)
 
+    def creade_bottom_buttons(selfe) -> None:
         settings_button = QPushButton("настойки")
         quit_button    = QPushButton("выйти")
         quit_button.clicked.connect(self.quit_app.emit)
@@ -92,19 +115,10 @@ class StartScreen(QWidget):
         bottom_layout = QHBoxLayout()
         bottom_layout.addWidget(settings_button)
         bottom_layout.addWidget(quit_button)
-        layout.addLayout(bottom_layout)
+        self.layout.addLayout(bottom_layout) 
 
-        self.refresh_tags()
-
-    def refresh_tags(self):
-        dummy_tags = [
-            "транспорт",
-            "природа",
-            "школа",
-            "спорт",
-        ]
-
+    def refresh_tags(self) -> None:
         dummy_tags.sort()
         for tag_name in dummy_tags:
             check = QCheckBox(tag_name.lower())
-            self.tags_layout.addWidget(check)
+            self.tags_scroll_layout.addWidget(check)

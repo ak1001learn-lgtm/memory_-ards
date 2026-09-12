@@ -11,9 +11,8 @@ from PyQt6.QtWidgets import(
     QWidget
 )
 
+from app.ui_style import *
 
-CARD_MIN_HEIGHT = 280
-CARD_PADDING    = 16
 
 dummy_cards = [
     {
@@ -44,13 +43,8 @@ class StudyScreen(QWidget):
         self.was_flipped = False 
 
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(
-            layout_margin := 40,
-            layout_margin,
-            layout_margin,
-            layout_margin,
-        )
-        layout.setSpacing(16)
+        layout.setContentsMargins(BIG_MARGINS)
+        layout.setSpacing(BIG_SPACING)
 
         top_layout = QHBoxLayout()
         back_button = QPushButton("на главный экран")
@@ -83,17 +77,12 @@ class StudyScreen(QWidget):
         )
 
         card_font = QFont()
-        card_font.setPointSize(14)
+        card_font.setPointSize(CARD_FONT_SIZE)
         self.card_label.setFont(card_font)
 
         card_layout = QVBoxLayout(card_area)
         card_layout.addWidget(self.card_label)
-        self.card_label.setContentsMargins(
-            CARD_PADDING, 
-            CARD_PADDING, 
-            CARD_PADDING, 
-            CARD_PADDING,
-        )
+        self.card_label.setContentsMargins(CARD_MARGINS)
 
         card_scroll = QScrollArea()
         card_scroll.setWidgetResizable(True)
@@ -108,17 +97,17 @@ class StudyScreen(QWidget):
         hint_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(hint_label)
 
-        botton_layout = QHBoxLayout()
+        bottom_layout = QHBoxLayout()
         self.prev_button = QPushButton("назад")
         self.next_button = QPushButton("вперед")
-        self.next_button.setMinimumHeight(botton_button_hight :=40)
-        botton_layout.addWidget(self.prev_button)
-        self.prev_button.clicked.connect(self.end_stady)
-        self.next_button.clicked.connect(self.end_stady)
+        self.prev_button.setMinimumHeight(BIG_BUTTON_HEIGHT)
+        self.next_button.setMinimumHeight(BIG_BUTTON_HEIGHT)
+        self.prev_button.clicked.connect(self.end_study)
+        self.next_button.clicked.connect(self.end_study)
         
-        self.prev_button.setMinimumHeight(botton_button_hight)
-        botton_layout.addWidget(self.next_button)
-        layout.addLayout(botton_layout)
+        bottom_layout.addWidget(self.prev_button)
+        bottom_layout.addWidget(self.next_button)
+        layout.addLayout(bottom_layout)
 
         self.update()
 
@@ -152,7 +141,7 @@ class StudyScreen(QWidget):
             )
         self.card_label.setText(text.format_map(current_card))
 
-    def end_stady(self) -> None:
+    def end_study(self) -> None:
         if self.current_card_index < len(dummy_cards) - 1 :
             self.current_card_index += 1
             self.update_card()
