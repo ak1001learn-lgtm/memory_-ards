@@ -34,15 +34,15 @@ class StartScreen(QWidget):
         self.main_layout.setContentsMargins(BIG_MARGINS)
         self.main_layout.setSpacing(BIG_SPACING)
 
-        self.create_title()
-        self.create_study_button()
-        self.create_modes()
-        self.create_tags()
-        self.creade_bottom_buttons()
+        self.place_title()
+        self.place_study_button()
+        self.place_modes()
+        self.place_tags()
+        self.place_bottom_buttons()
 
         self.refresh_tags()
 
-    def create_title(self) -> None:
+    def place_title(self) -> None:
         title_layout = QVBoxLayout()
         title_layout.setSpacing(SML_SPACING)
         self.main_layout.addLayout(title_layout)
@@ -57,13 +57,13 @@ class StartScreen(QWidget):
         subtitle = QLabel("изучаем английский с помощью карточек")
         title_layout.addWidget(subtitle)
 
-    def create_study_button(self) -> None:
+    def place_study_button(self) -> None:
         study_button = QPushButton("начать обучение")
         study_button.setMinimumHeight(BIG_BUTTON_HEIGHT)
         study_button.clicked.connect(self.goto_study_screen.emit)
         self.main_layout.addWidget(study_button)
     
-    def create_modes(self) -> None:
+    def place_modes(self) -> None:
         modes_layout = QVBoxLayout()
         modes_layout.setSpacing(SML_SPACING)
         self.main_layout.addLayout(modes_layout)
@@ -90,7 +90,7 @@ class StartScreen(QWidget):
             mode_group.addButton(radio)
             moeds_group_layout.addWidget(radio)
     
-    def create_tags(self) -> None:
+    def place_tags(self) -> None:
         tags_layout = QVBoxLayout()
         tags_layout.setSpacing(SML_SPACING)
         self.main_layout.addLayout(tags_layout)
@@ -107,7 +107,7 @@ class StartScreen(QWidget):
         tags_scroll.setWidget(tags_container)
         tags_layout.addWidget(tags_scroll)
 
-    def creade_bottom_buttons(self) -> None:
+    def place_bottom_buttons(self) -> None:
         settings_button = QPushButton("настойки")
         quit_button    = QPushButton("выйти")
         quit_button.clicked.connect(self.quit_app.emit)

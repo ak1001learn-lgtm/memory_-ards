@@ -46,6 +46,13 @@ class StudyScreen(QWidget):
         self.main_layout.setContentsMargins(BIG_MARGINS)
         self.main_layout.setSpacing(BIG_SPACING)
 
+        self.place_top()
+        self.place_card()
+        self.place_bottom_buttons()
+
+        self.update()
+
+    def place_top(self) -> None:
         top_layout = QHBoxLayout()
         back_button = QPushButton("на главный экран")
         back_button.clicked.connect(self.goto_start_screen.emit)
@@ -55,19 +62,24 @@ class StudyScreen(QWidget):
         top_layout.addWidget(progress_label)
         self.main_layout.addLayout(top_layout)
 
-        card_area = QPushButton()
-        card_area.setMinimumHeight(CARD_MIN_HEIGHT)
-        card_area.setCheckable(False)
+    def place_card(self) -> None:
+        card_area_layout = QVBoxLayout()
+        card_area_layout.setSpacing(SML_SPACING)
+        self.main_layout.addLayout(card_area_layout)
+
+        card_button = QPushButton()
+        card_button.setMinimumHeight(CARD_MIN_HEIGHT)
+        card_button.setCheckable(False)
         #card_area.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        card_area.setCursor(Qt.CursorShape.PointingHandCursor)
-        card_area.setSizePolicy(
+        card_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        card_button.setSizePolicy(
             QSizePolicy.Policy.Expanding,
             QSizePolicy.Policy.Expanding,
         )
-        card_area.clicked.connect(self.flip_card)
+        card_button.clicked.connect(self.flip_card)
 
 
-        self.card_label = QLabel(card_area)
+        self.card_label = QLabel(card_button)
         self.card_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.card_label.setWordWrap(True)
         self.card_label.setTextFormat(Qt.TextFormat.RichText)
@@ -80,7 +92,7 @@ class StudyScreen(QWidget):
         card_font.setPointSize(CARD_FONT_SIZE)
         self.card_label.setFont(card_font)
 
-        card_layout = QVBoxLayout(card_area)
+        card_layout = QVBoxLayout(card_button)
         card_layout.addWidget(self.card_label)
         self.card_label.setContentsMargins(CARD_MARGINS)
 
@@ -90,13 +102,14 @@ class StudyScreen(QWidget):
             Qt.ScrollBarPolicy.ScrollBarAlwaysOff
         )
         card_scroll.setFrameShape(QFrame.Shape.NoFrame)
-        card_scroll.setWidget(card_area)
-        self.main_layout.addWidget(card_scroll)
+        card_scroll.setWidget(card_button)
+        card_area_layout.addWidget(card_scroll)
 
         hint_label = QLabel("нажмите по карточке или пробел, чтобы перевернуть её")
         hint_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.main_layout.addWidget(hint_label)
+        card_area_layout.addWidget(hint_label)
 
+    def place_bottom_buttons(self) -> None:
         bottom_layout = QHBoxLayout()
         self.prev_button = QPushButton("назад")
         self.next_button = QPushButton("вперед")
@@ -108,8 +121,6 @@ class StudyScreen(QWidget):
         bottom_layout.addWidget(self.prev_button)
         bottom_layout.addWidget(self.next_button)
         self.main_layout.addLayout(bottom_layout)
-
-        self.update()
 
     def flip_card(self) -> None:
         self.is_front_face = not self.is_front_face
