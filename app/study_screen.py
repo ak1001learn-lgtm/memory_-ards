@@ -42,9 +42,9 @@ class StudyScreen(QWidget):
         self.is_front_face = True
         self.was_flipped = False 
 
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(BIG_MARGINS)
-        layout.setSpacing(BIG_SPACING)
+        self.main_layout = QVBoxLayout(self)
+        self.main_layout.setContentsMargins(BIG_MARGINS)
+        self.main_layout.setSpacing(BIG_SPACING)
 
         top_layout = QHBoxLayout()
         back_button = QPushButton("на главный экран")
@@ -53,7 +53,7 @@ class StudyScreen(QWidget):
         top_layout.addWidget(back_button)
         top_layout.addStretch()
         top_layout.addWidget(progress_label)
-        layout.addLayout(top_layout)
+        self.main_layout.addLayout(top_layout)
 
         card_area = QPushButton()
         card_area.setMinimumHeight(CARD_MIN_HEIGHT)
@@ -91,11 +91,11 @@ class StudyScreen(QWidget):
         )
         card_scroll.setFrameShape(QFrame.Shape.NoFrame)
         card_scroll.setWidget(card_area)
-        layout.addWidget(card_scroll)
+        self.main_layout.addWidget(card_scroll)
 
         hint_label = QLabel("нажмите по карточке или пробел, чтобы перевернуть её")
         hint_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(hint_label)
+        self.main_layout.addWidget(hint_label)
 
         bottom_layout = QHBoxLayout()
         self.prev_button = QPushButton("назад")
@@ -107,7 +107,7 @@ class StudyScreen(QWidget):
         
         bottom_layout.addWidget(self.prev_button)
         bottom_layout.addWidget(self.next_button)
-        layout.addLayout(bottom_layout)
+        self.main_layout.addLayout(bottom_layout)
 
         self.update()
 

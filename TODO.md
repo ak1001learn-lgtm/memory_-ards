@@ -1,4 +1,4 @@
-- [ ]   поправить проблему с `layout` в [start_screen.py](./app/start_screen.py) и [study_screen.py](./app/study_screen.py)
+- [x]   поправить проблему с `layout` в [start_screen.py](./app/start_screen.py) и [study_screen.py](./app/study_screen.py)
 - [ ] разбить метод `__init__` на подфункции и сгрупперовать виджеты по разметкам в [study_screen.py](./app/study_screen.py)
 - [ ] сбрасывать экран обучения каждый раз при его запуске
 - [ ] добавить строку поиска по тэгам и кнопки изменения выбора всех тэгов в [start_screen.py](./app/start_screen.py)
