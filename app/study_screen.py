@@ -38,10 +38,6 @@ class StudyScreen(QWidget):
     def __init__(self) -> None:
         super().__init__()
 
-        self.current_card_index = 0
-        self.is_front_face = True
-        self.was_flipped = False 
-
         self.main_layout = QVBoxLayout(self)
         self.main_layout.setContentsMargins(BIG_MARGINS)
         self.main_layout.setSpacing(BIG_SPACING)
@@ -50,11 +46,12 @@ class StudyScreen(QWidget):
         self.place_card()
         self.place_bottom_buttons()
 
-        self.update()
+        self.reset_session()
 
     def place_top(self) -> None:
         top_layout = QHBoxLayout()
         back_button = QPushButton("на главный экран")
+        back_button.clicked.connect(self.reset_session)
         back_button.clicked.connect(self.goto_start_screen.emit)
         progress_label = QLabel("40/120")
         top_layout.addWidget(back_button)
@@ -115,12 +112,22 @@ class StudyScreen(QWidget):
         self.next_button = QPushButton("вперед")
         self.prev_button.setMinimumHeight(BIG_BUTTON_HEIGHT)
         self.next_button.setMinimumHeight(BIG_BUTTON_HEIGHT)
-        self.prev_button.clicked.connect(self.end_study)
-        self.next_button.clicked.connect(self.end_study)
+        self.prev_button.clicked.connect(self.next_study)
+        self.next_button.clicked.connect(self.next_study)
         
         bottom_layout.addWidget(self.prev_button)
         bottom_layout.addWidget(self.next_button)
         self.main_layout.addLayout(bottom_layout)
+
+    def reset_session(self) -> None:
+        self.current_card_index = 0
+        self.reset_card()
+
+    def reset_card(self) -> None:
+        self.is_front_face = True
+        self.was_flipped = False
+
+        self.update()
 
     def flip_card(self) -> None:
         self.is_front_face = not self.is_front_face
@@ -152,9 +159,10 @@ class StudyScreen(QWidget):
             )
         self.card_label.setText(text.format_map(current_card))
 
-    def end_study(self) -> None:
+    def next_study(self) -> None:
         if self.current_card_index < len(dummy_cards) - 1 :
             self.current_card_index += 1
-            self.update_card()
+            self.reset_card()
         else:
+            self.reset_session()
             self.goto_start_screen.emit()
