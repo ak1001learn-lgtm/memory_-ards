@@ -1,10 +1,11 @@
-from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import  (
     QButtonGroup,
     QCheckBox,
     QHBoxLayout,
     QLabel,
+    QLineEdit,
     QPushButton,
     QRadioButton,
     QScrollArea,
@@ -29,6 +30,8 @@ class StartScreen(QWidget):
 
     def __init__(self) -> None:
         super().__init__()
+
+        self.tags_checkboxes: list[QCheckBox] = []
 
         self.main_layout = QVBoxLayout(self)
         self.main_layout.setContentsMargins(BIG_MARGINS)
@@ -58,10 +61,10 @@ class StartScreen(QWidget):
         title_layout.addWidget(subtitle)
 
     def place_study_button(self) -> None:
-        study_button = QPushButton("начать обучение")
-        study_button.setMinimumHeight(BIG_BUTTON_HEIGHT)
-        study_button.clicked.connect(self.goto_study_screen.emit)
-        self.main_layout.addWidget(study_button)
+        self.study_button = QPushButton("начать обучение")
+        self.study_button.setMinimumHeight(BIG_BUTTON_HEIGHT)
+        self.study_button.clicked.connect(self.goto_study_screen.emit)
+        self.main_layout.addWidget(self.study_button)
     
     def place_modes(self) -> None:
         modes_layout = QVBoxLayout()
@@ -98,9 +101,23 @@ class StartScreen(QWidget):
         tags_label = QLabel("категории:")
         tags_layout.addWidget(tags_label)
 
+        tags_select_layout = QHBoxLayout()
+        tags_layout.addLayout(tags_select_layout)
+
+        self.tags_search = QLineEdit()
+        self.tags_search.setPlaceholderText("поиск по категориям...")
+        self.tags_search.setClearButtonEnabled(True)
+        tags_select_layout.addWidget(self.tags_search)
+
+        select_all_button   = QPushButton("выбрать все")
+        deselect_all_button = QPushButton("снять все")
+        tags_select_layout.addWidget(select_all_button)
+        tags_select_layout.addWidget(deselect_all_button) 
+
         tags_container = QWidget()
         self.tags_scroll_layout = QVBoxLayout(tags_container)
         self.tags_scroll_layout.setContentsMargins(SML_MARGINS)
+        self.tags_scroll_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
         tags_scroll = QScrollArea()
         tags_scroll.setWidgetResizable(True)
@@ -119,6 +136,13 @@ class StartScreen(QWidget):
 
     def refresh_tags(self) -> None:
         dummy_tags.sort()
+        self.tags_checkboxes.clear()
+
         for tag_name in dummy_tags:
             check = QCheckBox(tag_name.lower())
+            
+            self.tags_checkboxes.append(check)
             self.tags_scroll_layout.addWidget(check)
+
+    def update(self) -> None:
+        pass

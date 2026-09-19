@@ -103,6 +103,7 @@ class StudyScreen(QWidget):
         card_area_layout.addWidget(card_scroll)
 
         hint_label = QLabel("нажмите по карточке или пробел, чтобы перевернуть её")
+        hint_label.setStyleSheet("color: gray;")
         hint_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         card_area_layout.addWidget(hint_label)
 
