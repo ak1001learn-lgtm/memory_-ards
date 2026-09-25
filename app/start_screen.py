@@ -31,8 +31,6 @@ class StartScreen(QWidget):
     def __init__(self) -> None:
         super().__init__()
 
-        self.tags_checkboxes: list[QCheckBox] = []
-
         self.main_layout = QVBoxLayout(self)
         self.main_layout.setContentsMargins(BIG_MARGINS)
         self.main_layout.setSpacing(BIG_SPACING)
@@ -107,10 +105,13 @@ class StartScreen(QWidget):
         self.tags_search = QLineEdit()
         self.tags_search.setPlaceholderText("поиск по категориям...")
         self.tags_search.setClearButtonEnabled(True)
+        self.tags_search.textChanged.connect(self.filter_tags)
         tags_select_layout.addWidget(self.tags_search)
 
         select_all_button   = QPushButton("выбрать все")
         deselect_all_button = QPushButton("снять все")
+        select_all_button.clicked.connect(lambda: self.set_visible_tags_checked(True))
+        deselect_all_button.clicked.connect(lambda: self.set_visible_tags_checked(False))
         tags_select_layout.addWidget(select_all_button)
         tags_select_layout.addWidget(deselect_all_button) 
 
@@ -118,6 +119,11 @@ class StartScreen(QWidget):
         self.tags_scroll_layout = QVBoxLayout(tags_container)
         self.tags_scroll_layout.setContentsMargins(SML_MARGINS)
         self.tags_scroll_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        self.no_tags_found_label = QLabel("ничего не найдено")
+        self.no_tags_found_label.setStyleSheet("color: gray; font-style: italic;")
+        self.no_tags_found_label.setVisible(False)
+        self.tags_scroll_layout.addWidget(self.no_tags_found_label)
 
         tags_scroll = QScrollArea()
         tags_scroll.setWidgetResizable(True)
@@ -136,13 +142,25 @@ class StartScreen(QWidget):
 
     def refresh_tags(self) -> None:
         dummy_tags.sort()
-        self.tags_checkboxes.clear()
+        self.tags_checkboxes: list[QCheckBox] = []
 
         for tag_name in dummy_tags:
             check = QCheckBox(tag_name.lower())
             
             self.tags_checkboxes.append(check)
             self.tags_scroll_layout.addWidget(check)
+
+    def filter_tags(self, search_text: str) -> None:
+        search_text = search_text.lower()
+
+        for check in self.tags_checkboxes:
+            is_match = search_text in check.text()
+            check.setVisible(is_match)
+
+    def set_visible_tags_checked(self, cheched: bool) -> None:
+        for check in self.tags_checkboxes:
+            if check.isVisible():
+                check.setChecked(cheched)
 
     def update(self) -> None:
         pass
