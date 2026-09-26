@@ -108,22 +108,22 @@ class StartScreen(QWidget):
         self.tags_search.textChanged.connect(self.filter_tags)
         tags_select_layout.addWidget(self.tags_search)
 
-        select_all_button   = QPushButton("выбрать все")
-        deselect_all_button = QPushButton("снять все")
-        select_all_button.clicked.connect(lambda: self.set_visible_tags_checked(True))
-        deselect_all_button.clicked.connect(lambda: self.set_visible_tags_checked(False))
-        tags_select_layout.addWidget(select_all_button)
-        tags_select_layout.addWidget(deselect_all_button) 
+        self.select_all_button   = QPushButton("выбрать все")
+        self.deselect_all_button = QPushButton("снять все")
+        self.select_all_button.clicked.connect(lambda: self.set_visible_tags_checked(True))
+        self.deselect_all_button.clicked.connect(lambda: self.set_visible_tags_checked(False))
+        tags_select_layout.addWidget(self.select_all_button)
+        tags_select_layout.addWidget(self.deselect_all_button) 
 
         tags_container = QWidget()
         self.tags_scroll_layout = QVBoxLayout(tags_container)
         self.tags_scroll_layout.setContentsMargins(SML_MARGINS)
         self.tags_scroll_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        self.no_tags_found_label = QLabel("ничего не найдено")
-        self.no_tags_found_label.setStyleSheet("color: gray; font-style: italic;")
-        self.no_tags_found_label.setVisible(False)
-        self.tags_scroll_layout.addWidget(self.no_tags_found_label)
+        self.no_tags_label = QLabel("ничего не найдено")
+        self.no_tags_label.setStyleSheet("color: gray; font-style: italic;")
+        self.no_tags_label.setVisible(False)
+        self.tags_scroll_layout.addWidget(self.no_tags_label)
 
         tags_scroll = QScrollArea()
         tags_scroll.setWidgetResizable(True)
@@ -146,21 +146,38 @@ class StartScreen(QWidget):
 
         for tag_name in dummy_tags:
             check = QCheckBox(tag_name.lower())
+            check.toggled.connect(self.update_study_button)
             
             self.tags_checkboxes.append(check)
             self.tags_scroll_layout.addWidget(check)
 
+        self.update_study_button()
+
+    def update_study_button(self) -> None:
+        any_checkt = any(check.isChecked()for check in self.tags_checkboxes)
+        
+        self.study_button.setEnabled(any_checkt)
+        self.study_button.setToolTip(None if any_checkt else "выберите хотя бы одну категорию")
+
     def filter_tags(self, search_text: str) -> None:
         search_text = search_text.lower()
+        any_visible = False
 
         for check in self.tags_checkboxes:
             is_match = search_text in check.text()
             check.setVisible(is_match)
+            any_visible = any_visible or is_match
+
+        self.select_all_button.setEnabled(any_visible)
+        self.deselect_all_button.setEnabled(any_visible)
+
+        no_tags_hint = None if any_visible else "нет видимых категорий"
+        self.select_all_button.setToolTip(no_tags_hint)
+        self.deselect_all_button.setToolTip(no_tags_hint)
+
+        self.no_tags_label.setVisible(not any_visible)
 
     def set_visible_tags_checked(self, cheched: bool) -> None:
         for check in self.tags_checkboxes:
             if check.isVisible():
                 check.setChecked(cheched)
-
-    def update(self) -> None:
-        pass
