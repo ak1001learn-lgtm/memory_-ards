@@ -33,7 +33,7 @@ dummy_cards = [
 
 
 class StudyScreen(QWidget):
-    goto_start_screen = pyqtSignal()
+    goto_end_study_screen = pyqtSignal()
 
     def __init__(self) -> None:
         super().__init__()
@@ -50,9 +50,9 @@ class StudyScreen(QWidget):
 
     def place_top(self) -> None:
         top_layout = QHBoxLayout()
-        back_button = QPushButton("на главный экран")
+        back_button = QPushButton("закончить обучение")
         back_button.clicked.connect(self.reset_session)
-        back_button.clicked.connect(self.goto_start_screen.emit)
+        back_button.clicked.connect(self.goto_end_study_screen.emit)
         progress_label = QLabel("40/120")
         top_layout.addWidget(back_button)
         top_layout.addStretch()
@@ -161,9 +161,50 @@ class StudyScreen(QWidget):
         self.card_label.setText(text.format_map(current_card))
 
     def next_study(self) -> None:
+
         if self.current_card_index < len(dummy_cards) - 1 :
             self.current_card_index += 1
             self.reset_card()
         else:
             self.reset_session()
-            self.goto_start_screen.emit()
+            self.goto_end_study_screen.emit()
+
+class EndStudyScreen(QWidget):
+    goto_start_screen = pyqtSignal()
+
+    def __init__(self) -> None:
+        super().__init__()
+
+        self.main_layout = QVBoxLayout(self)
+        self.main_layout.setContentsMargins(BIG_MARGINS)
+        self.main_layout.setSpacing(BIG_SPACING)
+
+        self.place_title()
+        self.main_layout.addStretch()
+        self.place_stats()
+        self.place_bottom()
+
+    def place_title(self) -> None:
+        title_layout = QVBoxLayout()
+        title_layout.setSpacing(SML_SPACING)
+        self.main_layout.addLayout(title_layout)
+
+        title = QLabel("вы закончили обученине")
+        title_font = QFont()
+        title_font.setPointSize(TITLE_FONT_SIZE)
+        title_font.setBold(True)
+        title.setFont(title_font)
+        title_layout.addWidget(title)
+
+        subtitle = QLabel("вот ваша статистика по пройденой сессии")
+        title_layout.addWidget(subtitle)
+
+    def place_stats(self) -> None:
+        pass
+
+    def place_bottom(self) -> None:
+        self.study_button = QPushButton("вернуться на главный экран")
+        self.study_button.setMinimumHeight(BIG_BUTTON_HEIGHT)
+        self.study_button.clicked.connect(self.goto_start_screen.emit)
+        self.main_layout.addWidget(self.study_button)
+    
