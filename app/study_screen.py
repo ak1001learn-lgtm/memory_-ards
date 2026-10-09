@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import(
     QVBoxLayout,
     QWidget
 )
-
+from app.screen import Screen
 from app.ui_style import *
 
 
@@ -32,15 +32,11 @@ dummy_cards = [
 ]
 
 
-class StudyScreen(QWidget):
+class StudyScreen(Screen):
     goto_end_study_screen = pyqtSignal()
 
     def __init__(self) -> None:
         super().__init__()
-
-        self.main_layout = QVBoxLayout(self)
-        self.main_layout.setContentsMargins(BIG_MARGINS)
-        self.main_layout.setSpacing(BIG_SPACING)
 
         self.place_top()
         self.place_card()
@@ -179,35 +175,19 @@ class StudyScreen(QWidget):
             self.reset_session()
             self.goto_end_study_screen.emit()
 
-class EndStudyScreen(QWidget):
+class EndStudyScreen(Screen):
     goto_start_screen = pyqtSignal()
 
     def __init__(self) -> None:
         super().__init__()
 
-        self.main_layout = QVBoxLayout(self)
-        self.main_layout.setContentsMargins(BIG_MARGINS)
-        self.main_layout.setSpacing(BIG_SPACING)
-
-        self.place_title()
+        self.place_title(
+            "вы закончили обученине",
+            "вот ваша статистика по пройденой сессии"
+        )
         self.main_layout.addStretch()
         self.place_stats()
         self.place_bottom()
-
-    def place_title(self) -> None:
-        title_layout = QVBoxLayout()
-        title_layout.setSpacing(SML_SPACING)
-        self.main_layout.addLayout(title_layout)
-
-        title = QLabel("вы закончили обученине")
-        title_font = QFont()
-        title_font.setPointSize(TITLE_FONT_SIZE)
-        title_font.setBold(True)
-        title.setFont(title_font)
-        title_layout.addWidget(title)
-
-        subtitle = QLabel("вот ваша статистика по пройденой сессии")
-        title_layout.addWidget(subtitle)
 
     def place_stats(self) -> None:
         pass

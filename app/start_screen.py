@@ -1,5 +1,4 @@
 from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import  (
     QButtonGroup,
     QCheckBox,
@@ -13,6 +12,7 @@ from PyQt6.QtWidgets import  (
     QWidget
 )
 
+from app.screen import*
 from app.ui_style import *
 
 
@@ -23,7 +23,7 @@ dummy_tags = [
     "спорт",
 ]
 
-class StartScreen(QWidget):
+class StartScreen(Screen):
     goto_study_screen = pyqtSignal()
     quit_app          = pyqtSignal()
 
@@ -31,11 +31,10 @@ class StartScreen(QWidget):
     def __init__(self) -> None:
         super().__init__()
 
-        self.main_layout = QVBoxLayout(self)
-        self.main_layout.setContentsMargins(BIG_MARGINS)
-        self.main_layout.setSpacing(BIG_SPACING)
-
-        self.place_title()
+        self.place_title(
+            "memory cards",
+            "изучаем английский с помощью карточек"
+        )
         self.place_study_button()
         self.place_modes()
         self.place_tags()
@@ -43,27 +42,12 @@ class StartScreen(QWidget):
 
         self.refresh_tags()
 
-    def place_title(self) -> None:
-        title_layout = QVBoxLayout()
-        title_layout.setSpacing(SML_SPACING)
-        self.main_layout.addLayout(title_layout)
-
-        title = QLabel("memory cards")
-        title_font = QFont()
-        title_font.setPointSize(TITLE_FONT_SIZE)
-        title_font.setBold(True)
-        title.setFont(title_font)
-        title_layout.addWidget(title)
-
-        subtitle = QLabel("изучаем английский с помощью карточек")
-        title_layout.addWidget(subtitle)
-
     def place_study_button(self) -> None:
-        self.study_button = QPushButton("начать обучение")
+        self.study_button = QPushButton("Начать обучение")
         self.study_button.setMinimumHeight(BIG_BUTTON_HEIGHT)
         self.study_button.clicked.connect(self.goto_study_screen.emit)
         self.main_layout.addWidget(self.study_button)
-    
+
     def place_modes(self) -> None:
         modes_layout = QVBoxLayout()
         modes_layout.setSpacing(SML_SPACING)
