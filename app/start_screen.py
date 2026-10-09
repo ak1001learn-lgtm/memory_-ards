@@ -146,14 +146,14 @@ class StartScreen(QWidget):
 
         for tag_name in dummy_tags:
             check = QCheckBox(tag_name.lower())
-            check.toggled.connect(self.update_study_button)
+            check.toggled.connect(self.refresh_study_button)
             
             self.tags_checkboxes.append(check)
             self.tags_scroll_layout.addWidget(check)
 
-        self.update_study_button()
+        self.refresh_study_button()
 
-    def update_study_button(self) -> None:
+    def refresh_study_button(self) -> None:
         any_checkt = any(check.isChecked()for check in self.tags_checkboxes)
         
         self.study_button.setEnabled(any_checkt)

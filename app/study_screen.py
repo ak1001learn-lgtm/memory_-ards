@@ -128,20 +128,20 @@ class StudyScreen(QWidget):
         self.is_front_face = True
         self.was_flipped = False
 
-        self.update()
+        self.refresh()
 
     def flip_card(self) -> None:
         self.is_front_face = not self.is_front_face
         self.was_flipped = True
 
-        self.update()
+        self.refresh()
 
-    def update(self) -> None:
-        self.update_card()
+    def refresh(self) -> None:
+        self.refresh_card()
         self.prev_button.setEnabled(self.was_flipped)
         self.next_button.setEnabled(self.was_flipped)
 
-    def update_card(self) -> None:
+    def refresh_card(self) -> None:
         current_card = dummy_cards[self.current_card_index]
         
         if self.is_front_face:
