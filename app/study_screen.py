@@ -141,6 +141,10 @@ class StudyScreen(QWidget):
         self.prev_button.setEnabled(self.was_flipped)
         self.next_button.setEnabled(self.was_flipped)
 
+        flip_card_hint = None if self.was_flipped else "переверните карточку"
+        self.prev_button.setToolTip(flip_card_hint)
+        self.next_button.setToolTip(flip_card_hint)
+
     def refresh_card(self) -> None:
         current_card = dummy_cards[self.current_card_index]
         
