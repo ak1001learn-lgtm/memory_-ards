@@ -53,10 +53,11 @@ class StudyScreen(QWidget):
         back_button = QPushButton("закончить обучение")
         back_button.clicked.connect(self.reset_session)
         back_button.clicked.connect(self.goto_end_study_screen.emit)
-        progress_label = QLabel("40/120")
+        
+        self.progress_label = QLabel()
         top_layout.addWidget(back_button)
         top_layout.addStretch()
-        top_layout.addWidget(progress_label)
+        top_layout.addWidget(self.progress_label)
         self.main_layout.addLayout(top_layout)
 
     def place_card(self) -> None:
@@ -138,6 +139,11 @@ class StudyScreen(QWidget):
 
     def refresh(self) -> None:
         self.refresh_card()
+
+        self.progress_label.setText(
+            f"{self.current_card_index + 1}/{len(dummy_cards)}"
+        )
+
         self.prev_button.setEnabled(self.was_flipped)
         self.next_button.setEnabled(self.was_flipped)
 
