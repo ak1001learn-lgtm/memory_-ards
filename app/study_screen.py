@@ -1,5 +1,5 @@
 from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QFont
+from PyQt6.QtGui import QFont, QKeySequence, QShortcut
 from PyQt6.QtWidgets import(
     QFrame,
     QHBoxLayout,
@@ -8,7 +8,6 @@ from PyQt6.QtWidgets import(
     QScrollArea,
     QSizePolicy,
     QVBoxLayout,
-    QWidget
 )
 from app.screen import Screen
 from app.ui_style import *
@@ -42,16 +41,18 @@ class StudyScreen(Screen):
         self.place_card()
         self.place_bottom_buttons()
 
+        self.set_shortcuts()
+
         self.reset_session()
 
     def place_top(self) -> None:
         top_layout = QHBoxLayout()
-        back_button = QPushButton("закончить обучение")
-        back_button.clicked.connect(self.reset_session)
-        back_button.clicked.connect(self.goto_end_study_screen.emit)
+        self.finish_button = QPushButton("закончить обучение")
+        self.finish_button.clicked.connect(self.reset_session)
+        self.finish_button.clicked.connect(self.goto_end_study_screen.emit)
         
         self.progress_label = QLabel()
-        top_layout.addWidget(back_button)
+        top_layout.addWidget(self.finish_button)
         top_layout.addStretch()
         top_layout.addWidget(self.progress_label)
         self.main_layout.addLayout(top_layout)
@@ -61,19 +62,19 @@ class StudyScreen(Screen):
         card_area_layout.setSpacing(SML_SPACING)
         self.main_layout.addLayout(card_area_layout)
 
-        card_button = QPushButton()
-        card_button.setMinimumHeight(CARD_MIN_HEIGHT)
-        card_button.setCheckable(False)
-        #card_area.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        card_button.setCursor(Qt.CursorShape.PointingHandCursor)
-        card_button.setSizePolicy(
+        self.card_button = QPushButton()
+        self.card_button.setMinimumHeight(CARD_MIN_HEIGHT)
+        self.card_button.setCheckable(False)
+        self.card_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.card_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.card_button.setSizePolicy(
             QSizePolicy.Policy.Expanding,
             QSizePolicy.Policy.Expanding,
         )
-        card_button.clicked.connect(self.flip_card)
+        self.card_button.clicked.connect(self.flip_card)
 
 
-        self.card_label = QLabel(card_button)
+        self.card_label = QLabel(self.card_button)
         self.card_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.card_label.setWordWrap(True)
         self.card_label.setTextFormat(Qt.TextFormat.RichText)
@@ -86,7 +87,7 @@ class StudyScreen(Screen):
         card_font.setPointSize(CARD_FONT_SIZE)
         self.card_label.setFont(card_font)
 
-        card_layout = QVBoxLayout(card_button)
+        card_layout = QVBoxLayout(self.card_button)
         card_layout.addWidget(self.card_label)
         self.card_label.setContentsMargins(CARD_MARGINS)
 
@@ -96,7 +97,7 @@ class StudyScreen(Screen):
             Qt.ScrollBarPolicy.ScrollBarAlwaysOff
         )
         card_scroll.setFrameShape(QFrame.Shape.NoFrame)
-        card_scroll.setWidget(card_button)
+        card_scroll.setWidget(self.card_button)
         card_area_layout.addWidget(card_scroll)
 
         hint_label = QLabel("нажмите по карточке или пробел, чтобы перевернуть её")
@@ -116,6 +117,20 @@ class StudyScreen(Screen):
         bottom_layout.addWidget(self.prev_button)
         bottom_layout.addWidget(self.next_button)
         self.main_layout.addLayout(bottom_layout)
+
+    def set_shortcuts(self) -> None:
+        shortcuts = [
+            ("Space", self.card_button.click),
+            ("Left",  self.prev_button.click),
+            ("A",     self.prev_button.click),
+            ("Right", self.next_button.click),
+            ("D",     self.next_button.click),
+            ("Esc",   self.finish_button.click),
+        ]
+
+        for key, slot in shortcuts:
+            sc = QShortcut(QKeySequence(key), self)
+            sc.activated.connect(slot)
 
     def reset_session(self) -> None:
         self.current_card_index = 0
