@@ -24,8 +24,9 @@ dummy_tags = [
 ]
 
 class StartScreen(Screen):
-    goto_study_screen = pyqtSignal()
-    quit_app          = pyqtSignal()
+    goto_settings_screen = pyqtSignal()
+    goto_study_screen    = pyqtSignal()
+    quit_app             = pyqtSignal()
 
 
     def __init__(self) -> None:
@@ -116,7 +117,8 @@ class StartScreen(Screen):
 
     def place_bottom_buttons(self) -> None:
         settings_button = QPushButton("настойки")
-        quit_button    = QPushButton("выйти")
+        quit_button     = QPushButton("выйти")
+        settings_button.clicked.connect(self.goto_settings_screen.emit)
         quit_button.clicked.connect(self.quit_app.emit)
 
         bottom_layout = QHBoxLayout()

@@ -208,8 +208,8 @@ class EndStudyScreen(Screen):
         pass
 
     def place_bottom(self) -> None:
-        self.study_button = QPushButton("вернуться на главный экран")
-        self.study_button.setMinimumHeight(BIG_BUTTON_HEIGHT)
-        self.study_button.clicked.connect(self.goto_start_screen.emit)
-        self.main_layout.addWidget(self.study_button)
+        self.back_button = QPushButton("вернуться на главный экран")
+        self.back_button.setMinimumHeight(BIG_BUTTON_HEIGHT)
+        self.back_button.clicked.connect(self.goto_start_screen.emit)
+        self.main_layout.addWidget(self.back_button)
     
